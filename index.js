@@ -5,29 +5,24 @@ const {
   JSDOM
 } = jsdom;
 const chartFrame = require('g-chartframe');
-
-const bertha = require('bertha-client').default();
-
-
-const sortData = require('./lib/sort-data.js').sortData;
-const averageData = require('./lib/average-data.js').averageData;
+const bertha = require('bertha-client');
+const {sortData} = require('./lib/sort-data.js');
+const {averageData} = require('./lib/average-data.js');
+const { colourSelector, nameCleaner } = require('./lib/helpers.js');
+const scatterChart = require('./lib/scatterchart.js').electionScatterChart;
+const lineChart = require('./lib/linechart.js').electionLineChart;
+const chartAxes = require('./lib/chart-axes.js').electionChartAxes;
 
 const spreadsheetKey = '1k0Om8fwwSnxOolpkGGOjBHlffEeMvQwtVM6gQs_AfYE';
 
-const data = await bertha.get(spreadsheetKey, [
-   'data',
- ], { republish: true });
-
-console.log("NEW DATA", data);
- 
-// const { colourSelector, nameCleaner } = require('./lib/helpers.js');
-//
-// const scatterChart = require('./lib/scatterchart.js').electionScatterChart;
-// const lineChart = require('./lib/linechart.js').electionLineChart;
-// const chartAxes = require('./lib/chart-axes.js').electionChartAxes;
+const dateEarliest = new Date("1 October 2016");
+const dateLatest = new Date("1 February 2018");
+const yAxisMin = 0;
+const yAxisMax = 45;
+const dir = 'dist';
+const timestamp = Date.now();
 
 // CHART CONFIG
-
 const medChartConfig = {
 	frameMaker: chartFrame.webFrameM,
 	width: 700,
@@ -35,8 +30,8 @@ const medChartConfig = {
 	chartPadding: {bottom: 0, top: 0},
 	chartMargin: {bottom: 25, top: 145, left: 30, right: 50},
 	sourceSizing: {sourcePos: 20},
-	title: 'German politics polltracker',
-  radius: 2.5,
+	title: 'Catalonia polltracker',
+  radius: 5,
 };
 const smallChartConfig = {
 	frameMaker: chartFrame.webFrameS,
@@ -45,95 +40,72 @@ const smallChartConfig = {
 	chartPadding: {bottom: 0, top: 0},
 	chartMargin: {bottom: -30, top: 180, left: 20, right: 28},
 	sourceSizing: {sourcePos: 25},
-	title: 'German federal election |' + '2017: poll of polls',
-  radius: 2,
+	title: 'Catalonia polltracker',
+  radius: 3,
 };
 
-// update start and finish dates every day
-const dateLatest = new Date();
-const currentYear = dateLatest.getFullYear();
-const lastYear = currentYear - 1;
-const dateEarliest = new Date(dateLatest).setFullYear(lastYear);
+loadData().then(data =>{
+  const sortedData = sortData(data.data);
+  const chartM = makeChart(sortedData, medChartConfig);
+  const chartS = makeChart(sortedData, smallChartConfig);
+  writeChartToFile(chartM, 'medium');
+  writeChartToFile(chartS, 'small');
+}).catch(err => console.error(`MAKING THE CHART FAILED ${err}`, err));
 
-const monthsBetweenTicks = 3;
-const yAxisMin = 0;
-const yAxisMax = 45;
-const dotOpacity = 1;
-const timestamp = d3.timeFormat('%d-%m-%Y')(new Date());
-const dir = './dist';
-const s3Dir = 'http://ft-ig-content-prod.s3-website-eu-west-1.amazonaws.com/v2/ft-interactive/germany-2017-polltracker/master/';
-
-
-// loadData(dataUrl).then(data => {
-// 	const cleanData = prepareData(data);
-// 	const chartM = makeChart(cleanData, medChartConfig);
-// 	const chartS = makeChart(cleanData, smallChartConfig);
-// 	writeChartToFile(chartM, 'medium');
-// 	writeChartToFile(chartS, 'small');
-//   writeHoldingPage(timestamp, dir);
-// })
-// .catch(err => console.error(`MAKING THE CHART FAILED ${err}`, err));
-
-
-async function loadData(url) {
-	return new Promise((res, rej) => {
-		d3.json(url, data => res(data));
-	});
-}
-
-function prepareData(data) {
-	return sortData(data);
-}
+async function loadData(){
+  return bertha.get(spreadsheetKey, ['data'], { republish: true });
+};
 
 function makeChart(data, chartConfig) {
   // Create average data
 	const lineData = averageData(data);
 
-  // Get chart chartConfig
-	const {frameMaker, width, height, chartPadding, chartMargin, titleSizing, sourceSizing, title, radius} = chartConfig;
+  console.log("Line data", lineData);
+
+  const {frameMaker, width, height, chartPadding, chartMargin, titleSizing, sourceSizing, title, radius} = chartConfig;
 	const dateLastPublished = d3.utcFormat('%H:%M, %b %d %Y')(Date.now() + 3600); //assume UK time is BST, one hour ahead of UTC
 
   // Set up the virtual dom
-	const virtualConsole = new jsdom.VirtualConsole();
-	virtualConsole.sendTo(console);
+  const virtualConsole = new jsdom.VirtualConsole();
+  virtualConsole.sendTo(console);
 
-	const dom = new JSDOM(fs.readFileSync('scaffold.html'), {
-		virtualConsole
-	});
+  const dom = new JSDOM(fs.readFileSync('scaffold.html'), {virtualConsole});
 
   // Get the thing we'll be drawing in
-	const chartContainer = d3.select(dom.window.document.querySelector('body div.chart'));
+  const chartContainer = d3.select(dom.window.document.querySelector('body div.chart'));
 
   // Set up frame
-	const frame = frameMaker({
-		title,
-		subtitle: 'Lines represent weighted averages |' +
-      'Points represent polls | |' +
-      'Voting intention, share by party (%)',
-		source: `Source: Wahlrecht.de, updated ${dateLastPublished} |` +
-      'Graphic: Anna Leach, © FT',
+  const frame = frameMaker({
+    title,
+    subtitle: 'Lines represent weighted averages |' +
+    'Points represent polls | |' +
+    'Voting intention, share by party (%)',
+    source: `Source: Catalonia, updated ${dateLastPublished} |` +
+    'Graphic: Anna Leach, © FT',
     margin: chartMargin
-	});
+  });
 
   // Various amends to make the thing fit on the page
   frame.autoPosition(false);
-	frame.sourceY(height - sourceSizing.sourcePos);
+  frame.sourceY(height - sourceSizing.sourcePos);
   frame.sourceLineHeight(18);
 
-	const chartHeight = frame.dimension().height;
-	const chartWidth = frame.dimension().width - chartMargin.left - chartMargin.right;
+  const chartHeight = frame.dimension().height;
+  const chartWidth = frame.dimension().width - chartMargin.left - chartMargin.right;
+  const dotOpacity = 0.9;
+  const monthsBetweenTicks = 3;
+  const timestamp = Date.now();
 
   // Add scales
-	const xScale = d3.scaleLinear()
+  const xScale = d3.scaleLinear()
     .domain([dateEarliest, dateLatest])
     .range([0, chartWidth]);
 
-	const yScale = d3.scaleLinear()
+  const yScale = d3.scaleLinear()
     .domain([yAxisMin, yAxisMax])
     .range([(chartHeight - chartPadding.bottom - chartPadding.top), 0]);
 
-
-  // Set up svg
+    // Set up svg
 	chartContainer.select('svg')
     .attr('width', width)
     .attr('height', height)
@@ -166,11 +138,14 @@ function makeChart(data, chartConfig) {
 	averageLineChart.setXScale(xScale);
 	averageLineChart.setYScale(yScale);
 	averageLineChart.setColourSelector(colourSelector);
-	averageLineChart.setNameCleaner(nameCleaner);
+	// averageLineChart.setNameCleaner(nameCleaner);
 
   // Add all to frame
 	frame.plot()
-    .datum(data.filter(d => d['surveyPublished'] > dateEarliest))
+    .datum(data.filter(d => {
+      // console.log("HERE DATA", d['surveyPublished']);
+      return d['surveyPublished'] > dateEarliest;
+    }))
     .call(pollScatterChart)
     .call(axes);
 
@@ -179,6 +154,7 @@ function makeChart(data, chartConfig) {
     .call(averageLineChart);
 
 	return chartContainer;
+
 }
 
 function writeChartToFile(chartContainer, size) {
@@ -190,21 +166,6 @@ function writeChartToFile(chartContainer, size) {
 	if (!fs.existsSync(dir)) {
 		fs.mkdirSync(dir);
 	}
-	fs.writeFileSync(`${dir}/germany-2017-latest-${size}.svg`, markup);
-	fs.writeFileSync(`${dir}/germany-2017-${timestamp}-${size}.svg`, markup);
-}
-
-function writeHoldingPage(timestamp, dir){
-  const htmlStart = fs.readFileSync('display-page-start.html');
-  const htmlEnd = `</body></html>`;
-  const fileList = fs.readdirSync(dir).reverse().filter(file => !file.includes('index') );
-  const pictureMarkup = fileList.map((file) => {
-    return `<h2>${file.split('-').splice(2).join(" ")}</h2>
-            <a href='${s3Dir}${file}'>${s3Dir}${file}</a>
-            <object type='image/svg+xml' data='${file}' style="display:block">
-            </object>`;
-  })
-  const markup = htmlStart + pictureMarkup + htmlEnd;
-
-  fs.writeFileSync(`${dir}/index.html`, markup);
+	fs.writeFileSync(`${dir}/catalonia-latest-${size}.svg`, markup);
+	fs.writeFileSync(`${dir}/catalonia-${timestamp}-${size}.svg`, markup);
 }
