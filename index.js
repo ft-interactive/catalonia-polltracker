@@ -15,20 +15,26 @@ const chartAxes = require('./lib/chart-axes.js').electionChartAxes;
 
 const spreadsheetKey = '1k0Om8fwwSnxOolpkGGOjBHlffEeMvQwtVM6gQs_AfYE';
 
-const dateEarliest = new Date("1 October 2016");
-const dateLatest = new Date("1 February 2018");
+const dateEarliest = new Date("27 June 2017");
+const dateLatest = new Date("1 Jan 2018");
 const yAxisMin = 0;
-const yAxisMax = 45;
+const yAxisMax = 33;
 const dir = 'dist';
 const timestamp = Date.now();
+const dotOpacity = 0.7;
+const monthsBetweenTicks = 1;
+
+const partyNames = [ "erc", "cs", "psc", "pdecat", "csqp", "pp", "cup", "catcomu",
+  "other", "undecided"];
+  // have removed "jxsi" and "non-specifiedother" and "null", "noanswer", "blank", "willnotvote",
 
 // CHART CONFIG
 const medChartConfig = {
 	frameMaker: chartFrame.webFrameM,
 	width: 700,
-	height: 550,
+	height: 650,
 	chartPadding: {bottom: 0, top: 0},
-	chartMargin: {bottom: 25, top: 145, left: 30, right: 50},
+	chartMargin: {bottom: -90, top: 145, left: 30, right: 50},
 	sourceSizing: {sourcePos: 20},
 	title: 'Catalonia polltracker',
   radius: 5,
@@ -36,7 +42,7 @@ const medChartConfig = {
 const smallChartConfig = {
 	frameMaker: chartFrame.webFrameS,
 	width: 300,
-	height: 500,
+	height: 600,
 	chartPadding: {bottom: 0, top: 0},
 	chartMargin: {bottom: -30, top: 180, left: 20, right: 28},
 	sourceSizing: {sourcePos: 25},
@@ -45,7 +51,7 @@ const smallChartConfig = {
 };
 
 loadData().then(data =>{
-  const sortedData = sortData(data.data);
+  const sortedData = sortData(data.data, partyNames);
   const chartM = makeChart(sortedData, medChartConfig);
   const chartS = makeChart(sortedData, smallChartConfig);
   writeChartToFile(chartM, 'medium');
@@ -59,8 +65,6 @@ async function loadData(){
 function makeChart(data, chartConfig) {
   // Create average data
 	const lineData = averageData(data);
-
-  console.log("Line data", lineData);
 
   const {frameMaker, width, height, chartPadding, chartMargin, titleSizing, sourceSizing, title, radius} = chartConfig;
 	const dateLastPublished = d3.utcFormat('%H:%M, %b %d %Y')(Date.now() + 3600); //assume UK time is BST, one hour ahead of UTC
@@ -80,7 +84,7 @@ function makeChart(data, chartConfig) {
     subtitle: 'Lines represent weighted averages |' +
     'Points represent polls | |' +
     'Voting intention, share by party (%)',
-    source: `Source: Catalonia, updated ${dateLastPublished} |` +
+    source: `Source: Various polls, updated ${dateLastPublished} |` +
     'Graphic: Anna Leach, © FT',
     margin: chartMargin
   });
@@ -92,8 +96,6 @@ function makeChart(data, chartConfig) {
 
   const chartHeight = frame.dimension().height;
   const chartWidth = frame.dimension().width - chartMargin.left - chartMargin.right;
-  const dotOpacity = 0.9;
-  const monthsBetweenTicks = 3;
   const timestamp = Date.now();
 
   // Add scales
@@ -143,7 +145,6 @@ function makeChart(data, chartConfig) {
   // Add all to frame
 	frame.plot()
     .datum(data.filter(d => {
-      // console.log("HERE DATA", d['surveyPublished']);
       return d['surveyPublished'] > dateEarliest;
     }))
     .call(pollScatterChart)
