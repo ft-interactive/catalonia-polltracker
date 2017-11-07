@@ -44,7 +44,7 @@ const smallChartConfig = {
 	width: 300,
 	height: 600,
 	chartPadding: {bottom: 0, top: 0},
-	chartMargin: {bottom: -30, top: 180, left: 20, right: 28},
+	chartMargin: {bottom: -110, top: 170, left: 20, right: 28},
 	sourceSizing: {sourcePos: 25},
 	title: 'Catalonia polltracker',
   radius: 3,
