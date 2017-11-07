@@ -24,9 +24,9 @@ const timestamp = Date.now();
 const dotOpacity = 0.7;
 const monthsBetweenTicks = 1;
 
-const partyNames = [ "erc", "cs", "psc", "pdecat", "csqp", "pp", "cup", "catcomu",
-  "other", "undecided"];
-  // have removed "jxsi" and "non-specifiedother" and "null", "noanswer", "blank", "willnotvote",
+const partyNames = [ "erc", "cs", "psc", "pdecat", "csqp", "pp", "cup"];
+  // have removed "jxsi" and "non-specifiedother" "catcomu", and "null", "noanswer", "blank", "willnotvote",
+  // and excluded the two polls that contained other and undecided
 
 // CHART CONFIG
 const medChartConfig = {
@@ -140,7 +140,7 @@ function makeChart(data, chartConfig) {
 	averageLineChart.setXScale(xScale);
 	averageLineChart.setYScale(yScale);
 	averageLineChart.setColourSelector(colourSelector);
-	// averageLineChart.setNameCleaner(nameCleaner);
+	averageLineChart.setNameCleaner(nameCleaner);
 
   // Add all to frame
 	frame.plot()
