@@ -6,7 +6,7 @@
   "scripts": {
     "prebuild": "npm run clean",
     "build": "node index.js",
-    "deploy": "ft-graphics-deploy --assets-prefix=https://ig.ft.com/v2/__assets/",
+    "deploy": "ft-graphics-deploy",
     "clean": "rm -rf dist",
     "test": "echo \" No tests specified :( \""
   },
