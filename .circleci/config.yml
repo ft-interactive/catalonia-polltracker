@@ -16,7 +16,7 @@ jobs:
           command: npm rebuild node-sass phantomjs-prebuilt
       - save_cache:
           name: Save cache (node_modules)
-          key: node_modules-{{ checksum "/package-lock.json" }}
+          key: node_modules-{{ checksum "package-lock.json" }}
           paths:
             - node_modules/
       - run:
