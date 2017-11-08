@@ -9,7 +9,7 @@ The data from this app comes from a Bertha spreadsheet that is manually updated.
 1) Add the new data to the above spreadsheet (changing column names may cause problems, see below)
 2) In the #graphics-dev channel on Slack, command build bot to rebuild this app: `buildbot build catalonia-polltracker`
 3) The s3 url where the latest svg image is hosted should be overwritten with the
-new image within a few minutes. The new image should also be visible here:
+new image within a few minutes. The new image should also be visible here: http://ft-ig-content-prod.s3-website-eu-west-1.amazonaws.com/v2/ft-interactive/catalonia-polltracker/master/index.html
 
 ## Running locally
 1) Git clone the app
