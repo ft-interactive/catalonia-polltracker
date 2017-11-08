@@ -11,21 +11,19 @@ The data from this app comes from a Bertha spreadsheet that is manually updated.
 3) The s3 url where the latest svg image is hosted should be overwritten with the
 new image within a few minutes. The new image should also be visible here:
 
+## Running locally
+1) Git clone the app
+2) Run `npm run build` to create new files that will be visible in the `dist` folder of the app. When you do this, the app will grab the latest data from the spreadsheet, reflecting any new changes in there.
+3) If you want to tweak the CSS or JS, unfortunately you need to point the browser at your file in the dist folder, run `npm run build` after every change, and hit refresh to see the change.
+
+
 ## Problems?
 Changing column names - especially party names may cause problems.
-Party names in the spreadsheet need to match party names in the app: [in this line in index.js](https://github.com/Financial-Times/ig-catalonia-polltracker/blob/master/index.js#L17) (capitalisation does not matter, but spelling does!) 
-If you want a new party to show in the graphic, add it to the array in index.js linked above. 
+Party names in the spreadsheet need to match party names in the app: [in this line in index.js](https://github.com/Financial-Times/ig-catalonia-polltracker/blob/master/index.js#L17) (capitalisation does not matter, but spelling does!)
+If you want a new party to show in the graphic, add it to the array in index.js linked above.
 
-## What this app does
-This app uses the pattern of rendering a D3 graph on the server, creating it with JSDOM to allow for a virtual dom to created and manipulated on the server. 
-The output is several files written to the `dist` folder.
-These can then be written to an S3 bucket if you provide AWS credentials so the app 
-
-## Running locally
-1) Git clone the app 
-2) Run `npm run build` to create new files that will be visible in the `dist` folder of the app. When you do this, the app will grab the latest data from the spreadsheet, reflecting any new changes in there. 
-3) Run `npm run deploy` to create new files, add them to `dist` and also write them to S3. 
-They will be available here: 
-xxx
-
-4) If you want to tweak the CSS or JS, unfortunately you need to run `npm run build` after every change, point the browser at your file in the dist folder, and hit refresh to see the change. 
+## How the app works
+This app uses the pattern of rendering a D3 graph on the server, using JSDOM to allow for a virtual dom to created and manipulated on the server.
+The D3 chart is written on this virtual dom.
+The output is several files written to the `dist` folder - static svgs of the charts.
+When the app is built and deployed on Circle, the whole app is written to S3, the static files inside `dist` can be accessed from there. 
