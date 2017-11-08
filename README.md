@@ -7,7 +7,7 @@ The data from this app comes from a Bertha spreadsheet that is manually updated.
 
 ## To regenerate with new data
 1) Add the new data to the above spreadsheet (changing column names may cause problems, see below)
-2) In the #graphics-dev channel on Slack, command build bot to rebuild this app: `buildbot build ig-catalonia-polltracker`
+2) In the #graphics-dev channel on Slack, command build bot to rebuild this app: `buildbot build catalonia-polltracker`
 3) The s3 url where the latest svg image is hosted should be overwritten with the
 new image within a few minutes. The new image should also be visible here:
 
@@ -19,7 +19,7 @@ new image within a few minutes. The new image should also be visible here:
 
 ## Problems?
 Changing column names - especially party names may cause problems.
-Party names in the spreadsheet need to match party names in the app: [in this line in index.js](https://github.com/Financial-Times/ig-catalonia-polltracker/blob/master/index.js#L17) (capitalisation does not matter, but spelling does!)
+Party names in the spreadsheet need to match party names in the app: [in this line in index.js](https://github.com/ft-interactive/catalonia-polltracker/blob/master/index.js#L17) (capitalisation does not matter, but spelling does!)
 If you want a new party to show in the graphic, add it to the array in index.js linked above.
 
 ## How the app works
