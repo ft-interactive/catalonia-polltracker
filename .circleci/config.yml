@@ -3,64 +3,32 @@ jobs:
   build:
     working_directory: ~/project
     docker:
-      - image: node:8
+      - image: node:7
     steps:
       - checkout
-      - run:
-          name: Backup package-lock.json
-          # This file gets modified during setup, which would break our use of
-          # it as a cache key. So we back it up to tmp first.
-          command: cp package-lock.json /tmp/
       - restore_cache:
-          name: Restore cache (node_modules)
-          key: node_modules-{{ checksum "/tmp/package-lock.json" }}
-      - restore_cache:
-          name: Restore cache (bower_components)
-          key: bower_components-hack1-{{ checksum "bower.json" }}
+          key: node_modules-{{ checksum "yarn.lock" }}
       - run:
           name: Install dependencies
-          # NB. this also does bower install as postinstall step
-          command: npm install --unsafe-perm
+          command: yarn --pure-lockfile
       - run:
           name: Rebuild problematic node modules
-          command: npm rebuild
+          command: npm rebuild node-sass phantomjs-prebuilt
       - save_cache:
-          name: Save cache (node_modules)
-          key: node_modules-{{ checksum "/tmp/package-lock.json" }}
+          key: node_modules-{{ checksum "yarn.lock" }}
           paths:
             - node_modules/
-      - save_cache:
-          name: Save cache (bower_components)
-          key: bower_components-hack1-{{ checksum "bower.json" }}
-          paths:
-            - bower_components/
       - run:
           name: Build
-          command: npm run build
+          command: yarn run build
       - store_artifacts:
-          name: Store artifacts (dist)
           path: dist/
-      - store_artifacts:
-          name: Store artifact (package-lock.json)
-          path: package-lock.json
       - deploy:
           name: Deploy
           command: |
             if [ "$PREVIEW" == "true" ]
             then
-              npm run deploy -- --confirm --preview
+              yarn run deploy -- --confirm --preview
             else
-              npm run deploy -- --confirm
+              yarn run deploy -- --confirm
             fi
-      - run:
-          name: Check accessibility of deployed site
-          command: |
-            if [ "$PREVIEW" == "true" ]
-            then
-              npm run check-accessibility:preview
-            else
-              npm run check-accessibility
-            fi
-      - run:
-          name: General QA checks
-          command: npm run qa || echo "Automatic QA checks failed. Continuing anyway"
