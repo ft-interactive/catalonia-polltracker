@@ -6,6 +6,7 @@
   "scripts": {
     "prebuild": "npm run clean",
     "build": "node index.js",
+    "start": "npm run build",
     "deploy": "ft-graphics-deploy",
     "clean": "rm -rf dist",
     "test": "echo \" No tests specified :( \""
