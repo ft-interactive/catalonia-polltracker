@@ -34,7 +34,7 @@ const smallChartConfig = {
 	width: 300,
 	height: 600,
 	chartPadding: {bottom: 0, top: 0},
-	chartMargin: {bottom: -110, top: 170, left: 20, right: 28},
+	chartMargin: {bottom: -110, top: 170, left: 20, right: 15},
 	sourceSizing: {sourcePos: 45},
 	title: 'Catalonia polltracker',
   radius: 3,
@@ -45,20 +45,22 @@ const smallChartConfig = {
 const medChartConfigBar = {
 	frameMaker: chartFrame.webFrameM,
 	width: 700,
-	height: 650,
+	height: 500,
 	chartPadding: {bottom: 0, top: 0},
-	chartMargin: {bottom: -70, top: 145, left: 30, right: 50},
-	sourceSizing: {sourcePos: 40},
-	title: 'Catalonia independence vote'
+	chartMargin: {bottom: -30, top: 145, left: 30, right: 50},
+	sourceSizing: {sourcePos: 30},
+	title: 'Catalonia independence vote',
+  barWidth: 100,
 };
 const smallChartConfigBar = {
 	frameMaker: chartFrame.webFrameS,
 	width: 300,
-	height: 600,
+	height: 400,
 	chartPadding: {bottom: 0, top: 0},
-	chartMargin: {bottom: -110, top: 170, left: 20, right: 28},
-	sourceSizing: {sourcePos: 45},
-	title: 'Catalonia independence vote'
+	chartMargin: {bottom: -40, top: 140, left: 20, right: 5},
+	sourceSizing: {sourcePos: 20},
+	title: 'Catalonia independence vote',
+  barWidth: 50,
 };
 
 loadData().then(data =>{

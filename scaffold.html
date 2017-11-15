@@ -121,7 +121,7 @@
           }
           /* x axis minor styles */
           #x-axis .tick.minor line{
-            stroke-dasharray: 2 6;
+            stroke: none;
           }
           #x-axis .tick.minor text{
             text-anchor: middle;
@@ -135,6 +135,14 @@
           }
           .axes path.domain{
             stroke: none;
+          }
+
+          /* BAR CHART */
+          /* TEXT STYLES */
+          g.vote-label-box text.vote-label,
+          g.label-box text.name-label,
+          g.party-label-box text.party-label  {
+            text-anchor: middle;
           }
 
         </style>
