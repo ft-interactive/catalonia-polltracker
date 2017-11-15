@@ -48,7 +48,7 @@ const medChartConfigBar = {
 	height: 500,
 	chartPadding: {bottom: 0, top: 0},
 	chartMargin: {bottom: -30, top: 145, left: 30, right: 50},
-	sourceSizing: {sourcePos: 30},
+	sourceSizing: {sourcePos: 38},
 	title: 'Catalonia independence vote',
   barWidth: 100,
 };
@@ -57,8 +57,8 @@ const smallChartConfigBar = {
 	width: 300,
 	height: 400,
 	chartPadding: {bottom: 0, top: 0},
-	chartMargin: {bottom: -40, top: 140, left: 20, right: 5},
-	sourceSizing: {sourcePos: 20},
+	chartMargin: {bottom: -30, top: 140, left: 20, right: 5},
+	sourceSizing: {sourcePos: 38},
 	title: 'Catalonia independence vote',
   barWidth: 50,
 };
