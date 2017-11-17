@@ -47,7 +47,7 @@ const medChartConfigBar = {
 	width: 700,
 	height: 500,
 	chartPadding: {bottom: 0, top: 0},
-	chartMargin: {bottom: -30, top: 145, left: 30, right: 50},
+	chartMargin: {bottom: -40, top: 125, left: 30, right: 50},
 	sourceSizing: {sourcePos: 38},
 	title: 'Catalonia independence vote',
   barWidth: 100,
@@ -57,10 +57,10 @@ const smallChartConfigBar = {
 	width: 300,
 	height: 400,
 	chartPadding: {bottom: 0, top: 0},
-	chartMargin: {bottom: -30, top: 140, left: 20, right: 5},
+	chartMargin: {bottom: -40, top: 130, left: 20, right: 5},
 	sourceSizing: {sourcePos: 38},
 	title: 'Catalonia independence vote',
-  barWidth: 50,
+  barWidth: 60,
 };
 
 loadData().then(data =>{
