@@ -27,7 +27,7 @@ const medChartConfig = {
 	chartMargin: {bottom: -70, top: 145, left: 30, right: 50},
 	sourceSizing: {sourcePos: 40},
 	title: 'Catalonia poll tracker',
-  radius: 5,
+  radius: 3,
 };
 const smallChartConfig = {
 	frameMaker: chartFrame.webFrameS,
@@ -37,7 +37,7 @@ const smallChartConfig = {
 	chartMargin: {bottom: -110, top: 170, left: 20, right: 15},
 	sourceSizing: {sourcePos: 45},
 	title: 'Catalonia poll tracker',
-  radius: 3,
+  radius: 2,
 };
 
 
