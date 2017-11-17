@@ -26,7 +26,7 @@ const medChartConfig = {
 	chartPadding: {bottom: 0, top: 0},
 	chartMargin: {bottom: -70, top: 145, left: 30, right: 50},
 	sourceSizing: {sourcePos: 40},
-	title: 'Catalonia polltracker',
+	title: 'Catalonia poll tracker',
   radius: 5,
 };
 const smallChartConfig = {
@@ -36,7 +36,7 @@ const smallChartConfig = {
 	chartPadding: {bottom: 0, top: 0},
 	chartMargin: {bottom: -110, top: 170, left: 20, right: 15},
 	sourceSizing: {sourcePos: 45},
-	title: 'Catalonia polltracker',
+	title: 'Catalonia poll tracker',
   radius: 3,
 };
 
