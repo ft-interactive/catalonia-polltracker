@@ -1,3 +1,5 @@
+require('hard-rejection/register');
+
 const fs = require('fs');
 const d3 = require('d3');
 const jsdom = require('jsdom');
@@ -15,7 +17,7 @@ const {makeBarchart} = require('./lib/barchart/index.js');
 
 // Catalan data comes from Bertha sheet
 const spreadsheetKey = '1k0Om8fwwSnxOolpkGGOjBHlffEeMvQwtVM6gQs_AfYE';
-const partyNames = [ "erc", "cs", "psc", "pdecat", "catcomu", "pp", "cup"]; // these parties must all be findable in the dataset & have at least some results data, if they are null, the app breaks
+const partyNames = [ "erc", "cs", "psc", "juntsxcat", "catcomu", "pp", "cup"]; // these parties must all be findable in the dataset & have at least some results data, if they are null, the app breaks
 const timestamp = d3.timeFormat('%d-%m-%Y')(new Date());
 
 // CHART CONFIG POLLTRACKER
@@ -63,7 +65,7 @@ const smallChartConfigBar = {
   barWidth: 60,
 };
 
-loadData().then(data =>{
+bertha.get(spreadsheetKey, ['data'], { republish: true }).then(data =>{
   const sortedData = sortData(data.data, partyNames);
   const averagedData = averageData(sortedData);
 
@@ -79,8 +81,4 @@ loadData().then(data =>{
   writeChartToFile(barS, 'bar-small');
 
   writeHoldingPage(timestamp);
-}).catch(err => console.error(`MAKING THE CHART FAILED: => `, err));
-
-async function loadData(){
-  return bertha.get(spreadsheetKey, ['data'], { republish: true });
-};
+});

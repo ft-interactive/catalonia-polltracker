@@ -17,6 +17,7 @@
     "bertha-client": "^4.0.1",
     "d3": "^4.9.1",
     "g-chartframe": "^5.1.1",
+    "hard-rejection": "^1.0.0",
     "jsdom": "^11.0.0"
   },
   "devDependencies": {
